@@ -1,0 +1,1 @@
+This is a project based around simple board games that are connection based such as tic tac toe and connect 4.  It was inspired by a coding challenge given by a company.  It produces the mechanics of the games, and has the AI for computer players.
