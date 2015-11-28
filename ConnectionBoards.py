@@ -42,6 +42,14 @@ class Board(object):
 		self.pieces[loc] = player
 		self.numEmptySpaces -= 1
 
+	def getEmptySquares(self):
+		emptySquares = []
+		for x in range(self.boardDimension):
+			for y in range(self.boardDimension):
+				if self.pieces[(x,y)] == dash:
+					emptySquares.append((x,y))
+		return emptySquares
+
 	def legitMove(self, x, y):
 		"""TODO: Add checks for within bounds of board here, and also that player is legit"""
 		if self.pieces[(x,y)] == dash:
@@ -52,7 +60,6 @@ class Board(object):
 		return False
 
 	def gameOver(self):
-		"""TODO: figure out if there is a winner"""
 		if self.numEmptySpaces <= 0:
 			return True
 		return self.checkForConnections()
