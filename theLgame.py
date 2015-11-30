@@ -3,43 +3,34 @@ import itertools
 import random
 import math
 
-theLgame = "theLgame"
-dash = ConnectionBoards.dash
-A = "A"
-B = "B"
-O = "O"
-
 class LBoard(ConnectionBoards.Board):
+	theLgame = "theLgame"
 	lPiece = "lPiece"
 	dotPiece = "dotPiece"
+	O = "O"
 
 	def __init__(self):
 		self.boardDimension = 4
 		self.pieces = {}
 		for x in range(self.boardDimension):
 			for y in range(self.boardDimension):
-				self.pieces[(x,y)] = dash
+				self.pieces[(x,y)] = Board.dash
 		self.intializePieces()
 
 	def intializePieces(self):
-		self.pieces[(0,0)] = A
+		self.pieces[(0,0)] = Board.A
 		for y in range(3):
-			self.pieces[(1,y)] = A
-		self.pieces[(self.boardDimension-1, self.boardDimension-1)] = B
+			self.pieces[(1,y)] = Board.A
+		self.pieces[(self.boardDimension-1, self.boardDimension-1)] = Board.B
 		for y in range(3):
-			self.pieces[(self.boardDimension-2, self.boardDimension-1-y)] = B
-		self.pieces[(self.boardDimension-1, 0)] = O
-		self.pieces[(0, self.boardDimension-1)] = O
+			self.pieces[(self.boardDimension-2, self.boardDimension-1-y)] = Board.B
+		self.pieces[(self.boardDimension-1, 0)] = LBoard.O
+		self.pieces[(0, self.boardDimension-1)] = LBoard.O
 
-	#inherits printBoard(self)
+	#inherits printBoard(self), placePieces(self, loc, player), and removePiece(self, loc)
 
-	def placePiece(self, loc, player):
-		self.pieces[loc] = player
-
-	def removePiece(self, loc):
-		self.pieces[loc] = dash
-
-	def gameOver(self):
+	def gameOver(self, player):
+		self.removeLPiece(player)
 		numMoves = 0
 		empty = self.getEmptySquares()
 		combos = itertools.combinations(empty, 4)
@@ -49,11 +40,17 @@ class LBoard(ConnectionBoards.Board):
 		print("There are " + str(numMoves) + " possible moves.")
 		return numMoves <= 0
 
+	def removeLPiece(self, player):
+		for x in range(self.boardDimension):
+			for y in range(self.boardDimension):
+				if self.pieces[(x,y)] == player:
+					self.removePiece((x,y))
+
 	def legitMove(self, pairs, pieceType):
 		for (x, y) in pairs:
 			if x >= self.boardDimension or x < 0 or y >= self.boardDimension or y < 0:
 				return False
-			if self.pieces[(x,y)] != dash:
+			if self.pieces[(x,y)] != Board.dash:
 				return False
 
 		if pieceType == LBoard.lPiece:
@@ -78,14 +75,14 @@ class LBoard(ConnectionBoards.Board):
 					if cornerLoc in otherLocs:
 						otherLocsCopy = otherLocs[:]
 						otherLocsCopy.remove(cornerLoc)
-						return self.checkLX(cornerLoc, otherLocsCopy, 0, j)
+						return self.checkLX(cornerLoc, otherLocsCopy)
 					j += 2
 			else:
 				cornerLoc = (x+i, y)
 				if cornerLoc in otherLocs:
 					otherLocsCopy = otherLocs[:]
 					otherLocsCopy.remove(cornerLoc)
-					return self.checkLY(cornerLoc, otherLocsCopy, i, 0)
+					return self.checkLY(cornerLoc, otherLocsCopy)
 		return False
 		
 	def checkLX(self, cornerLoc, remainingLocs):
@@ -103,6 +100,7 @@ class LBoard(ConnectionBoards.Board):
 		if (x, y-1) in remainingLocs and (x, y-2) in remainingLocs:
 			return True
 		return False
-			
+
+
 
 
