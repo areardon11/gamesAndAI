@@ -56,15 +56,10 @@ class ConnectionBoard(Board):
 			self.boardDimension = 8
 			self.diagonalConnectionsAllowed = False
 
-		self.numEmptySpaces = self.boardDimension*self.boardDimension
 		self.pieces = {}
 		for x in range(self.boardDimension):
 			for y in range(self.boardDimension):
 				self.pieces[(x,y)] = Board.dash
-
-	def placePiece(self, loc, player):
-		self.pieces[loc] = player
-		self.numEmptySpaces -= 1
 
 	def legitMove(self, x, y):
 		if x >= self.boardDimension or x < 0 or y >= self.boardDimension or y < 0:
@@ -81,7 +76,7 @@ class ConnectionBoard(Board):
 		answer = self.checkForConnections()
 		if answer:
 			return answer
-		if self.numEmptySpaces <= 0:
+		if len(self.getEmptySquares()) <= 0:
 			return 'Tie'
 		return False
 
@@ -119,12 +114,15 @@ class ConnectionBoard(Board):
 		if self.pieces.get((x,y)) != player:
 			return False
 		return self.connectionTest(x+dx, y+dy, player, dx, dy, numPiecesTillConnection-1)
-		
+	
+	#returns a list of locations of possible actions (locations are tuples: (x,y) )	
 	def possibleActions(self):
 		if self.game == ConnectionBoard.connectFour:
 			empty = self.getEmptySquares()
 			actions = []
-			
+			for loc in empty:
+				if self.legitMove(loc):
+					actions.append(loc)
 			return actions
 		return self.getEmptySquares()
 
