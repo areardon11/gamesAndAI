@@ -1,3 +1,6 @@
+import sys
+sys.setrecursionlimit(1500)
+
 
 class Board(object):
 	"""Base Board class.  All extensions need a gameOver, legitMove, and randomMove"""
@@ -40,6 +43,7 @@ class ConnectionBoard(Board):
 	ticTacToe = "ticTacToe"
 	connectFour = "connectFour"
 	megaTicTacToe = "megaTicTacToe"
+	tie = "Tie"
 
 	def __init__(self, game):
 		self.game = game
@@ -61,6 +65,30 @@ class ConnectionBoard(Board):
 			for y in range(self.boardDimension):
 				self.pieces[(x,y)] = Board.dash
 
+	#returns a new ConnectionBoard object that is a copy of self
+	def boardCopy(self):
+		copiedBoard = ConnectionBoard(self.game)
+
+		#TODO: Do this portion in constant time
+		copiedBoard.pieces = {}
+		for piece in self.pieces:
+			copiedBoard.pieces[piece] = self.pieces[piece]
+		
+		return copiedBoard
+
+	#returns a ConnectionBoard that is a successor to this one where player makes move
+	def generateSuccessor(self, player, move):
+		successorState = self.boardCopy()
+		if successorState.legalMove(move):
+			successorState.placePiece(move, player)
+		else:
+			print("error with the successorState")
+		return successorState
+
+	def legalMove(self, loc):
+		(x, y) = loc
+		return self.legitMove(x, y)
+
 	def legitMove(self, x, y):
 		if x >= self.boardDimension or x < 0 or y >= self.boardDimension or y < 0:
 			return False
@@ -77,7 +105,7 @@ class ConnectionBoard(Board):
 		if answer:
 			return answer
 		if len(self.getEmptySquares()) <= 0:
-			return 'Tie'
+			return ConnectionBoard.tie
 		return False
 
 	def checkForConnections(self):
@@ -121,7 +149,7 @@ class ConnectionBoard(Board):
 			empty = self.getEmptySquares()
 			actions = []
 			for loc in empty:
-				if self.legitMove(loc):
+				if self.legalMove(loc):
 					actions.append(loc)
 			return actions
 		return self.getEmptySquares()

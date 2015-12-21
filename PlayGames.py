@@ -38,7 +38,7 @@ def playConnectionGameMixed(game):
 			AgentB = Agent.ConnectionRandomAgent(ConnectionBoards.Board.B)
 			break
 		if difficulty == 'hard':
-			AgentB = Agent.ConnectionRandomAgent(ConnectionBoards.Board.B)
+			AgentB = Agent.ConnectionIntelligentAgent(ConnectionBoards.Board.B, ConnectionBoards.Board.A)
 			break
 		print("That was not one of the options (no quotes)")
 
