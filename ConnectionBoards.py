@@ -18,11 +18,20 @@ class Board(object):
 	def printBoard(self):
 		y = self.boardDimension - 1
 		while y >= 0:
-			partialString = ""
+			partialString = str(y) + " | "
 			for x in range(self.boardDimension):
-				partialString = partialString + self.pieces[(x, y)]
+				partialString += self.pieces[(x, y)] + " "
 			y -= 1
 			print(partialString)
+
+		secondBottom = "    "
+		for x in range(self.boardDimension):
+			secondBottom += "__"
+		print(secondBottom)
+		bottomLine = "    "
+		for x in range(self.boardDimension):
+			bottomLine += str(x) + " "
+		print(bottomLine)
 
 	def placePiece(self, loc, player):
 		self.pieces[loc] = player

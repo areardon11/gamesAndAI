@@ -33,7 +33,7 @@ class ConnectionIntelligentAgent(Agent):
 		self.opponent = opponent
 
 	def move(self, board):
-		action = self.minimax(board, 4)
+		action = self.minimaxAB(board, 5)
 		print("Player " + self.player + " has chosen the move " + str(action))
 		return action
 
@@ -85,6 +85,49 @@ class ConnectionIntelligentAgent(Agent):
 		for action in state.possibleActions():
 			successorState = state.generateSuccessor(self.player, action)
 			v = max(v, self.utilityDiscount*self.minValue(successorState, depth-1))
+		return v
+
+
+	#does the minimax operation with alpha beta pruning
+	def minimaxAB(self, board, maxDepth):
+		alpha = float('-inf')
+		beta = float('inf')
+		currMax = float('-inf')
+		currBestAction = None
+		for action in board.possibleActions():
+			successor = board.generateSuccessor(self.player, action)
+			value = self.minValueAB(successor, maxDepth, alpha, beta)
+			alpha = max(alpha, value)
+			if value > currMax:
+				currMax = value
+				currBestAction = action
+			print(alpha)
+		print(currMax)
+		return currBestAction
+
+	def minValueAB(self, state, depth, alpha, beta):
+		if state.gameOver() or depth <= 0:
+			return self.utility(state)
+		v = float('inf')
+		for action in state.possibleActions():
+			successorState = state.generateSuccessor(self.opponent, action)
+			# successorState.printBoard()
+			v = min(v, self.maxValueAB(successorState, depth, alpha, beta))
+			if v <= alpha:
+				return v
+			beta = min(beta, v)
+		return v
+
+	def maxValueAB(self, state, depth, alpha, beta):
+		if state.gameOver() or depth <= 0:
+			return self.utility(state)
+		v = float('-inf')
+		for action in state.possibleActions():
+			successorState = state.generateSuccessor(self.player, action)
+			v = max(v, self.utilityDiscount*self.minValueAB(successorState, depth-1, alpha, beta))
+			if v >= beta:
+				return v
+			alpha = max(alpha, v)
 		return v
 
 
