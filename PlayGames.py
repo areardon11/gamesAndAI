@@ -32,17 +32,18 @@ def playConnectionGameComputer(game):
 		gameOver = bookkeeping(board)
 
 def playConnectionGameMixed(game):
+	board = ConnectionBoards.ConnectionBoard(game)
+
 	while True:
 		difficulty = raw_input("Please select a difficulty ('easy' or 'hard'): ")
 		if difficulty == 'easy':
 			AgentB = Agent.ConnectionRandomAgent(ConnectionBoards.Board.B)
 			break
 		if difficulty == 'hard':
-			AgentB = Agent.ConnectionIntelligentAgent(ConnectionBoards.Board.B, ConnectionBoards.Board.A)
+			AgentB = Agent.ConnectionIntelligentAgent(ConnectionBoards.Board.B, ConnectionBoards.Board.A, board.depth)
 			break
 		print("That was not one of the options (no quotes)")
 
-	board = ConnectionBoards.ConnectionBoard(game)
 	board.printBoard()
 	print("This is the board.  The bottom-left corner is '0 0'")
 	gameOver = False
@@ -103,3 +104,31 @@ def playConnectFour():
 
 def playMegaTicTacToe():
 	playConnectionGame(ConnectionBoards.ConnectionBoard.megaTicTacToe)
+
+def main():
+	print("Welcome to the personal game center!")
+
+	while True:
+		keepPlaying = True
+		print("options: ticTacToe megaTicTacToe connectFour")
+		print("Please type in which game you would like to play and hit enter:")
+		choice = raw_input()
+
+		while keepPlaying:
+			if choice == "ticTacToe":
+				playTicTacToe()
+			elif choice == "megaTicTacToe":
+				playMegaTicTacToe()
+			elif choice == "connectFour":
+				playConnectFour()
+			else:
+				print("That is not a recognized game, please type in the game exactly as shown")
+				break
+			
+			response = raw_input("Keep Playing? Type 'yes' or 'no': ")		
+			if response == "no" or response == "n":
+				keepPlaying = False
+
+if __name__ == "__main__":
+	main()
+

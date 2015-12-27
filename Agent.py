@@ -28,12 +28,13 @@ class ConnectionRandomAgent(Agent):
 class ConnectionIntelligentAgent(Agent):
 	utilityDiscount = .999
 
-	def __init__(self, player, opponent):
+	def __init__(self, player, opponent, depth):
 		super(ConnectionIntelligentAgent, self).__init__(player)
 		self.opponent = opponent
+		self.depth = depth
 
 	def move(self, board):
-		action = self.minimaxAB(board, 5)
+		action = self.minimaxAB(board, self.depth)
 		print("Player " + self.player + " has chosen the move " + str(action))
 		return action
 
@@ -65,7 +66,6 @@ class ConnectionIntelligentAgent(Agent):
 			if value >= currMax:
 				currMax = value
 				currBestAction = action
-		print(currMax)
 		return currBestAction
 
 	def minValue(self, state, depth):
@@ -74,7 +74,6 @@ class ConnectionIntelligentAgent(Agent):
 		v = float('inf')
 		for action in state.possibleActions():
 			successorState = state.generateSuccessor(self.opponent, action)
-			# successorState.printBoard()
 			v = min(v, self.maxValue(successorState, depth))
 		return v
 
@@ -101,7 +100,7 @@ class ConnectionIntelligentAgent(Agent):
 			if value > currMax:
 				currMax = value
 				currBestAction = action
-			print(alpha)
+			print("processing . . .")
 		print(currMax)
 		return currBestAction
 
@@ -111,8 +110,7 @@ class ConnectionIntelligentAgent(Agent):
 		v = float('inf')
 		for action in state.possibleActions():
 			successorState = state.generateSuccessor(self.opponent, action)
-			# successorState.printBoard()
-			v = min(v, self.maxValueAB(successorState, depth, alpha, beta))
+			v = min(v, self.maxValueAB(successorState, depth-1, alpha, beta))
 			if v <= alpha:
 				return v
 			beta = min(beta, v)

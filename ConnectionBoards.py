@@ -7,6 +7,7 @@ class Board(object):
 	dash = "-"
 	A = "A"
 	B = "B"
+	baseDepth = 4
 
 	def __init__(self):
 		self.boardDimension = 3
@@ -60,6 +61,7 @@ class ConnectionBoard(Board):
 		self.connectionLength = 3
 		self.diagonalConnectionsAllowed = True
 		self.gravity = False
+		self.depth = Board.baseDepth
 
 		if game == ConnectionBoard.connectFour:
 			self.connectionLength = 4
@@ -68,6 +70,8 @@ class ConnectionBoard(Board):
 		elif game == ConnectionBoard.megaTicTacToe:
 			self.boardDimension = 8
 			self.diagonalConnectionsAllowed = False
+		else:
+			self.depth = Board.baseDepth + 15
 
 		self.pieces = {}
 		for x in range(self.boardDimension):
