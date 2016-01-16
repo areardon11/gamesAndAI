@@ -115,11 +115,11 @@ def main():
 		choice = raw_input()
 
 		while keepPlaying:
-			if choice == "ticTacToe":
+			if choice == "ticTacToe" or choice == "t":
 				playTicTacToe()
-			elif choice == "megaTicTacToe":
+			elif choice == "megaTicTacToe" or choice == "m":
 				playMegaTicTacToe()
-			elif choice == "connectFour":
+			elif choice == "connectFour" or choice == "c":
 				playConnectFour()
 			else:
 				print("That is not a recognized game, please type in the game exactly as shown")

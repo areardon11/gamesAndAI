@@ -49,11 +49,17 @@ class ConnectionIntelligentAgent(Agent):
 		if gameOver == ConnectionBoards.ConnectionBoard.tie:
 			return 0
 		if gameOver == False:
-			return self.boardEvaluation()
+			return self.boardEvaluation(state)
 		return -1
 
-	def boardEvaluation(self):
-		return 0
+	def boardEvaluation(self, state):
+		scoreDic = {}
+		scoreDic[self.player] = 0
+		scoreDic[self.opponent] = 0
+
+		self.getConnectionValues(state, scoreDic)
+		evaluation = float(scoreDic[self.player] - scoreDic[self.opponent])/((state.boardDimension**2)*32)
+		return evaluation
 
 	#does the minimax operation
 	def minimax(self, board, maxDepth):
@@ -127,6 +133,42 @@ class ConnectionIntelligentAgent(Agent):
 				return v
 			alpha = max(alpha, v)
 		return v
+
+	#updates the values of the score dictionary to help the board evaluation
+	def getConnectionValues(self, state, score):
+		for x in range(state.boardDimension):
+			for y in range(state.boardDimension):
+				if state.pieces[(x,y)] != ConnectionBoards.Board.dash:
+					score[state.pieces[(x,y)]] += self.connectionsBegin(state, x, y)
+
+	#returns a value based on how useful a single x,y location is
+	def connectionsBegin(self, state, x, y):
+		value = 0
+
+		value += self.connectionContinue(state, x, y, state.pieces[(x,y)], 1, 0, state.connectionLength, 0)
+		value += self.connectionContinue(state, x, y, state.pieces[(x,y)], -1, 0, state.connectionLength, 0)
+		value += self.connectionContinue(state, x, y, state.pieces[(x,y)], 0, 1, state.connectionLength, 0)
+		value += self.connectionContinue(state, x, y, state.pieces[(x,y)], 0, -1, state.connectionLength, 0)
+		
+		if state.diagonalConnectionsAllowed:
+			value += self.connectionContinue(state, x, y, state.pieces[(x,y)], 1, 1, state.connectionLength, 0)
+			value += self.connectionContinue(state, x, y, state.pieces[(x,y)], -1, 1, state.connectionLength, 0)
+			value += self.connectionContinue(state, x, y, state.pieces[(x,y)], 1, -1, state.connectionLength, 0)
+			value += self.connectionContinue(state, x, y, state.pieces[(x,y)], -1, -1, state.connectionLength, 0)
+		
+		return value
+					
+	def connectionContinue(self, state, x, y, player, dx, dy, numPiecesTillConnection, numConnected):
+		if numPiecesTillConnection <= 0:
+			return numConnected
+
+		if state.pieces.get((x,y)) == ConnectionBoards.Board.dash:
+			return self.connectionContinue(state, x+dx, y+dy, player, dx, dy, numPiecesTillConnection-1, numConnected)
+		if state.pieces.get((x,y)) == player:
+			return self.connectionContinue(state, x+dx, y+dy, player, dx, dy, numPiecesTillConnection-1, numConnected+1)
+		return 0
+
+
 
 
 
