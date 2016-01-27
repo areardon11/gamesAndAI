@@ -2,6 +2,7 @@ import ConnectionBoards
 import itertools
 import random
 import math
+import Queue
 
 class Agent(object):
 	"""Each of the Agents that extend this class will pick a move, but also have 
@@ -23,7 +24,6 @@ class ConnectionRandomAgent(Agent):
 	def takeTurn(self, board):
 		loc = self.move(board)
 		board.placePiece(loc, self.player)
-
 
 class ConnectionIntelligentAgent(Agent):
 	utilityDiscount = .999
@@ -63,7 +63,6 @@ class ConnectionIntelligentAgent(Agent):
 
 	#does the minimax operation
 	def minimax(self, board, maxDepth):
-		# if self.player == ConnectionBoards.Board.A:
 		currMax = float('-inf')
 		currBestAction = None
 		for action in board.possibleActions():
@@ -106,8 +105,8 @@ class ConnectionIntelligentAgent(Agent):
 			if value > currMax:
 				currMax = value
 				currBestAction = action
-			print("processing . . .")
-		print(currMax)
+			#print("processing . . .")
+		#print(currMax)
 		return currBestAction
 
 	def minValueAB(self, state, depth, alpha, beta):
@@ -167,8 +166,4 @@ class ConnectionIntelligentAgent(Agent):
 		if state.pieces.get((x,y)) == player:
 			return self.connectionContinue(state, x+dx, y+dy, player, dx, dy, numPiecesTillConnection-1, numConnected+1)
 		return 0
-
-
-
-
-
+		
